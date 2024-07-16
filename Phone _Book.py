@@ -1,5 +1,5 @@
 from csv import DictWriter, DictReader
-from os.path import exists
+from os.path import exists, isfile
 
 
 class MyNameError(Exception):
@@ -90,12 +90,26 @@ def change_row(filename):
     res[row_number - 1]["Имя"] = data[0]
     res[row_number - 1]["Фамилия"] = data[1]
     res[row_number - 1]["Телефон"] = data[2]
-    standard_write(filename, res)\
-       
+    standard_write(filename, res)
 
+
+def copy():
+    number_row = int(input("Введите номер строки: "))
+    res = read_file(filename)
+    ist = [i for i in res[number_row - 1].values()]
+    print(*ist)
+    name_new_file = (input("Введите имя файла для переноса данных (без расширения): ")+".csv")
+    if isfile(name_new_file):
+        write_file(name_new_file, ist)
+        
+    else:
+        create_file(name_new_file)
+        write_file(name_new_file, ist)
+        
+    
 
 def help():
-    options = ["Список команд:" , "'q'-завершение" , "'w'-запись в книгу" , "'r'-чтение из книги" , "'f'-поиск" , "'d'-удаление данных" , "'c'-изменить данные"]
+    options = ["Список команд:" , "'q'-завершение" , "'w'-запись в книгу" , "'r'-чтение из книги" , "'f'-поиск" , "'d'-удаление данных" , "'e'-изменить данные", "'c'-копировать данные"]
     for i in options:
         print(i, end='\n')
 
@@ -126,11 +140,14 @@ def main():
                 print("Файл не существует. Создайте его.")
                 continue
             delete_row(filename)
-        elif command == "c":
+        elif command == "e":
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
             change_row(filename)
+        elif command == "c":
+            copy()
+            print("Капирование данных завершенно.")
 
 filename = "phone.csv"
 main() 
