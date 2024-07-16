@@ -6,7 +6,21 @@ class MyNameError(Exception):
     def __init__(self, txt):
         self.txt = txt
 
+class Num:
+    def __init__(self, max):
+        self.max = max
+        
+    def __iter__(self):
+        self.num = 0
+        return self
+    
+    def __next__(self):
+        if(self.num >= self.max):
+            raise StopIteration
+        self.num += 1
+        return self.num
 
+    
 def get_data():
     flag = False
     while not flag:
@@ -76,7 +90,9 @@ def change_row(filename):
     res[row_number - 1]["Имя"] = data[0]
     res[row_number - 1]["Фамилия"] = data[1]
     res[row_number - 1]["Телефон"] = data[2]
-    standard_write(filename, res)
+    standard_write(filename, res)\
+       
+
 
 def help():
     options = ["Список команд:" , "'q'-завершение" , "'w'-запись в книгу" , "'r'-чтение из книги" , "'f'-поиск" , "'d'-удаление данных" , "'c'-изменить данные"]
@@ -97,8 +113,9 @@ def main():
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
                 continue
+            num = iter(Num(len(read_file(filename))))
             for i in read_file(filename):
-                print(*i.values(), end = '\n')
+                print(next(num), *i.values(), end = '\n')
         elif command == "f":
             if not exists(filename):
                 print("Файл не существует. Создайте его.")
